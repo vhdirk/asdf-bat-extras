@@ -3,9 +3,12 @@ image: docker:dind
 asdf-plugin-test:
   stage: test
   before_script:
-    - apk update && apk add util-linux git file
+    - apk update && apk add util-linux git file bash
     - git clone https://github.com/asdf-vm/asdf.git
-    - . asdf/asdf.sh
+    # Cheating...
+    - export ASDF_DIR=$PWD/asdf
+    - export PATH=$HOME/.asdf/shims:$PATH
+
   script:
     - asdf plugin-add bat https://gitlab.com/wt0f/asdf-bat.git
     - asdf list-all bat
