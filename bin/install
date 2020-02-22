@@ -29,6 +29,9 @@ install_bat() {
   chmod +x "$bin_path"
   rm -rf "${install_path}/bat.tar.gz" "${install_path}"/bat-*
   ls -lR $install_path
+
+  file ${bin_install_path}/bat
+  ${bin_install_path}/bat --help
 }
 
 get_arch() {
