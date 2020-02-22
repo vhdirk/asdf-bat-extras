@@ -15,7 +15,6 @@ install_bat() {
   local bin_install_path="$install_path/bin"
   local download_url="$(get_download_url $version)"
 
-  set -x
   mkdir -p "${bin_install_path}"
 
   local bin_path="${bin_install_path}/bat"
@@ -23,15 +22,9 @@ install_bat() {
   curl -sSL "$download_url" -o "${install_path}/bat.tar.gz"
   tar xzf "${install_path}/bat.tar.gz" -C "${install_path}"
   mv "${install_path}/bat-v${version}-$(get_arch)-$(get_platform)"/* "${install_path}"
-  ls -l $install_path
   mv "${install_path}/bat" "${bin_path}"
-  ls -l ${install_path}/bin
   chmod +x "$bin_path"
   rm -rf "${install_path}/bat.tar.gz" "${install_path}"/bat-*
-  ls -lR $install_path
-
-  file ${bin_install_path}/bat
-  ${bin_install_path}/bat --help
 }
 
 get_arch() {
