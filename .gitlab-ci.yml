@@ -4,6 +4,7 @@ asdf-plugin-test:
   stage: test
   before_script:
     #- apk update && apk add util-linux git file curl bash gcompat libgcc
+    - apt update && apt install -y git curl 
     - git clone https://github.com/asdf-vm/asdf.git
     # Cheating...
     - export ASDF_DIR=$PWD/asdf
