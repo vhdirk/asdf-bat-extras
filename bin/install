@@ -22,9 +22,10 @@ install_bat() {
   curl -sSL "$download_url" -o "${install_path}/bat.tar.gz"
   tar xzf "${install_path}/bat.tar.gz" -C "${install_path}"
   ls -lR ${install_path}
+  mv "${install_path}/bat-*/*" "${install_path}"
   mv "${install_path}/bat" "${bin_path}"
   chmod +x "$bin_path"
-  rm "${install_path}/bat.tar.gz"
+  rm -rf "${install_path}/bat.tar.gz" "${install_path}/bat-*"
 }
 
 get_arch() {
