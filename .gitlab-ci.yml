@@ -1,4 +1,4 @@
-image: docker:dind
+image: quay.io/librelabs/ci:dind17  #docker:dind
 
 asdf-plugin-test:
   stage: test
@@ -10,7 +10,6 @@ asdf-plugin-test:
     - export PATH=$ASDF_DIR/bin:$PATH
 
   script:
-    - env
     - asdf plugin-add bat https://gitlab.com/wt0f/asdf-bat.git
     - asdf list-all bat
     - asdf=$(which asdf)
