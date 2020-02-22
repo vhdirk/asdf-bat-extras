@@ -5,13 +5,13 @@ asdf-plugin-test:
   before_script:
     - apk update && apk add util-linux git file curl bash
     - git clone https://github.com/asdf-vm/asdf.git
-    - ls -l
     # Cheating...
     - export ASDF_DIR=$PWD/asdf
-    - export PATH=$HOME/.asdf/shims:$ASDF_DIR/bin:$PATH
+    - export PATH=$ASDF_DIR/bin:$PATH
 
   script:
     - env
     - asdf plugin-add bat https://gitlab.com/wt0f/asdf-bat.git
     - asdf list-all bat
-    - asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat --version' || exit 1
+    - asdf=$(which asdf)
+    - bash -x $asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat --version' || exit 1
