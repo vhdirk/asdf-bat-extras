@@ -9,4 +9,4 @@ asdf-plugin-test:
   script:
     - asdf plugin-add bat https://gitlab.com/wt0f/asdf-bat.git
     - asdf list-all bat
-    - asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat version' || exit 1
+    - asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat --version' || exit 1
