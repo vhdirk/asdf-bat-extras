@@ -3,7 +3,7 @@ image: docker:dind
 asdf-plugin-test:
   stage: test
   before_script:
-    - apk update && apk add util-linux git file curl
+    - apk update && apk add util-linux git file curl bash
     - git clone https://github.com/asdf-vm/asdf.git
     - ls -l
     # Cheating...
