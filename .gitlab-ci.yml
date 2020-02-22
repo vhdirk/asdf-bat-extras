@@ -1,0 +1,12 @@
+image: quay.io/librelabs/ci:dind17
+
+asdf-plugin-test:
+  stage: test
+  before_script:
+    - apk update && apk add util-linux
+    - git clone https://github.com/asdf-vm/asdf.git
+    - . asdf/asdf.sh
+  script:
+    - asdf plugin-add bat https://gitlab.com/wt0f/asdf-bat.git
+    - asdf list-all bat
+    - asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat version' || exit 1
