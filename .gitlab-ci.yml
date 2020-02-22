@@ -10,6 +10,8 @@ asdf-plugin-test:
     - export PATH=$HOME/.asdf/shims:$PATH
 
   script:
+    - env
+    - ls -l $ASDF_DIR/asdf
     - asdf plugin-add bat https://gitlab.com/wt0f/asdf-bat.git
     - asdf list-all bat
     - asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat --version' || exit 1
