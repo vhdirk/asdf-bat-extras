@@ -8,7 +8,7 @@ asdf-plugin-test:
     - ls -l
     # Cheating...
     - export ASDF_DIR=$PWD/asdf
-    - export PATH=$HOME/.asdf/shims:$PATH
+    - export PATH=$HOME/.asdf/shims:$ASDF_DIR/bin:$PATH
 
   script:
     - env
