@@ -3,7 +3,7 @@ image: docker:dind
 asdf-plugin-test:
   stage: test
   before_script:
-    # - apk update && apk add util-linux file
+     - apk update && apk add util-linux git file
     - git clone https://github.com/asdf-vm/asdf.git
     - . asdf/asdf.sh
   script:
