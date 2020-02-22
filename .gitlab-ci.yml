@@ -1,17 +1,13 @@
-image: debian  #docker:dind
+image: debian:10
 
 asdf-plugin-test:
   stage: test
   before_script:
-    #- apk update && apk add util-linux git file curl bash gcompat libgcc
     - apt update && apt install -y git curl bsdmainutils file
     - git clone https://github.com/asdf-vm/asdf.git
-    # Cheating...
-    - export ASDF_DIR=$PWD/asdf
-    - export PATH=$ASDF_DIR/bin:$PATH
+    - . asdf/asdf.sh
 
   script:
     - asdf plugin-add bat https://gitlab.com/wt0f/asdf-bat.git
     - asdf list-all bat
-    - asdf=$(which asdf)
-    - bash -x $asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat --version' || exit 1
+    - asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat --version' || exit 1
