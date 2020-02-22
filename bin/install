@@ -21,6 +21,7 @@ install_bat() {
   echo "Downloading bat from ${download_url}"
   curl -sSL "$download_url" -o "${install_path}/bat.tar.gz"
   tar xzf "${install_path}/bat.tar.gz" -C "${install_path}"
+  ls -lR ${install_path}
   mv "${install_path}/bat" "${bin_path}"
   chmod +x "$bin_path"
   rm "${install_path}/bat.tar.gz"
