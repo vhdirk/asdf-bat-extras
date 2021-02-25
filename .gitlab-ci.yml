@@ -6,7 +6,7 @@ stages:
 
 variables:
   PLUGIN_NAME: bat
-  PLUGIN_EXEC: "$PLUGIN_NAME"
+  PLUGIN_EXEC: bat
   PLUGIN_REPO: https://gitlab.com/wt0f/asdf-$PLUGIN_NAME.git
 
 asdf-plugin-test:
