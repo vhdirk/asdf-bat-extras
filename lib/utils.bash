@@ -3,10 +3,10 @@
 set -euo pipefail
 
 # TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for <YOUR TOOL>.
-GH_REPO="<TOOL REPO>"
+GH_REPO="https://github.com/sharkdp/bat"
 
 fail() {
-  echo -e "asdf-<YOUR TOOL>: $*"
+  echo -e "asdf-bat: $*"
   exit 1
 }
 
@@ -52,11 +52,11 @@ install_version() {
   local install_path="$3"
 
   if [ "$install_type" != "version" ]; then
-    fail "asdf-<YOUR TOOL> supports release installs only"
+    fail "asdf-bat supports release installs only"
   fi
 
   # TODO: Adapt this to proper extension and adapt extracting strategy.
-  local release_file="$install_path/<YOUR TOOL>-$version.tar.gz"
+  local release_file="$install_path/bat-$version.tar.gz"
   (
     mkdir -p "$install_path"
     download_release "$version" "$release_file"
@@ -65,12 +65,12 @@ install_version() {
 
     # TODO: Asert <YOUR TOOL> executable exists.
     local tool_cmd
-    tool_cmd="$(echo "<TOOL CHECK>" | cut -d' ' -f1)"
+    tool_cmd="$(echo "bat --version" | cut -d' ' -f1)"
     test -x "$install_path/bin/$tool_cmd" || fail "Expected $install_path/bin/$tool_cmd to be executable."
 
-    echo "<YOUR TOOL> $version installation was successful!"
+    echo "bat $version installation was successful!"
   ) || (
     rm -rf "$install_path"
-    fail "An error ocurred while installing <YOUR TOOL> $version."
+    fail "An error ocurred while installing bat $version."
   )
 }

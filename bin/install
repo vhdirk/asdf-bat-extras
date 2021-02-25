@@ -1,65 +1,74 @@
 #!/usr/bin/env bash
 
-set -e
-set -o pipefail
+set -euo pipefail
 
-ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
-TMPDIR=${TMPDIR:-/tmp}
-[ -n "$ASDF_INSTALL_VERSION" ] || (>&2 echo 'Missing ASDF_INSTALL_VERSION' && exit 1)
-[ -n "$ASDF_INSTALL_PATH" ] || (>&2 echo 'Missing ASDF_INSTALL_PATH' && exit 1)
+# shellcheck source=../lib/utils.bash
+source "$(dirname "$0")/../lib/utils.bash"
 
-install_bat() {
-  local install_type=$1
-  local version=$2
-  local install_path=$3
-  local bin_install_path="$install_path/bin"
-  local download_url="$(get_download_url $version)"
+install_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
 
-  mkdir -p "${bin_install_path}"
 
-  local bin_path="${bin_install_path}/bat"
-  echo "Downloading bat from ${download_url}"
-  curl -sSL "$download_url" -o "${install_path}/bat.tar.gz"
-  tar xzf "${install_path}/bat.tar.gz" -C "${install_path}"
-  mv "${install_path}/bat-v${version}-$(get_arch)-$(get_platform)"/* "${install_path}"
-  mv "${install_path}/bat" "${bin_path}"
-  chmod +x "$bin_path"
-  rm -rf "${install_path}/bat.tar.gz" "${install_path}"/bat-*
-}
+# #!/usr/bin/env bash
 
-get_arch() {
-  arch=$(uname -m | tr '[:upper:]' '[:lower:]')
-  case ${arch} in
-  arm64)
-    arch='aarch64'
-    ;;
-  esac
+# set -e
+# set -o pipefail
 
-  echo ${arch}
-}
+# ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
+# TMPDIR=${TMPDIR:-/tmp}
+# [ -n "$ASDF_INSTALL_VERSION" ] || (>&2 echo 'Missing ASDF_INSTALL_VERSION' && exit 1)
+# [ -n "$ASDF_INSTALL_PATH" ] || (>&2 echo 'Missing ASDF_INSTALL_PATH' && exit 1)
 
-get_platform() {
-  plat=$(uname | tr '[:upper:]' '[:lower:]')
-  case ${plat} in
-  darwin)
-    plat='apple-darwin'
-    ;;
-  linux)
-    plat='unknown-linux-gnu'
-    ;;
-  windows)
-    plat='pc-windows=msvc'
-    ;;
-  esac
+# install_bat() {
+#   local version=$2
+#   local install_path=$3
+#   local bin_install_path="$install_path/bin"
+#   local download_url="$(get_download_url "$version")"
 
-  echo ${plat}
-}
+#   mkdir -p "${bin_install_path}"
 
-get_download_url() {
-  local version="$1"
-  local arch="$(get_arch)"
-  local platform="$(get_platform)"
-  echo "https://github.com/sharkdp/bat/releases/download/v${version}/bat-v${version}-${arch}-${platform}.tar.gz"
-}
+#   local bin_path="${bin_install_path}/bat"
+#   echo "Downloading bat from ${download_url}"
+#   curl -sSL "$download_url" -o "${install_path}/bat.tar.gz"
+#   tar xzf "${install_path}/bat.tar.gz" -C "${install_path}"
+#   mv "${install_path}/bat-v${version}-$(get_arch)-$(get_platform)"/* "${install_path}"
+#   mv "${install_path}/bat" "${bin_path}"
+#   chmod +x "$bin_path"
+#   rm -rf "${install_path}/bat.tar.gz" "${install_path}"/bat-*
+# }
 
-install_bat $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
+# get_arch() {
+#   arch=$(uname -m | tr '[:upper:]' '[:lower:]')
+#   case ${arch} in
+#   arm64)
+#     arch='aarch64'
+#     ;;
+#   esac
+
+#   echo ${arch}
+# }
+
+# get_platform() {
+#   plat=$(uname | tr '[:upper:]' '[:lower:]')
+#   case ${plat} in
+#   darwin)
+#     plat='apple-darwin'
+#     ;;
+#   linux)
+#     plat='unknown-linux-gnu'
+#     ;;
+#   windows)
+#     plat='pc-windows=msvc'
+#     ;;
+#   esac
+
+#   echo ${plat}
+# }
+
+# get_download_url() {
+#   local version="$1"
+#   local arch="$(get_arch)"
+#   local platform="$(get_platform)"
+#   echo "https://github.com/sharkdp/bat/releases/download/v${version}/bat-v${version}-${arch}-${platform}.tar.gz"
+# }
+
+# install_bat "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
