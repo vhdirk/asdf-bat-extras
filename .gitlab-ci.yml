@@ -4,6 +4,11 @@ stages:
   - test
   - notify
 
+variables:
+  PLUGIN_NAME: bat
+  PLUGIN_EXEC: $PLUGIN_NAME
+  PLUGIN_REPO: https://gitlab.com/wt0f/asdf-$PLUGIN_NAME.git
+
 asdf-plugin-test:
   stage: test
   before_script:
@@ -12,9 +17,9 @@ asdf-plugin-test:
     - . asdf/asdf.sh
 
   script:
-    - asdf plugin-add bat https://gitlab.com/wt0f/asdf-bat.git
-    - asdf list-all bat
-    - asdf plugin test bat https://gitlab.com/wt0f/asdf-bat.git 'bat --version' || exit 1
+    - asdf plugin-add $PLUGIN_NAME $PLUGIN_REPO
+    - asdf list-all $PLUGIN_NAME
+    - asdf plugin test $PLUGIN_NAME $PLUGIN_REPO '$PLUGIN_EXEC --version' || exit 1
 
 notify_success:
   stage: notify
