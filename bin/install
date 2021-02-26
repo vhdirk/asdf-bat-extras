@@ -5,6 +5,18 @@ set -euo pipefail
 # shellcheck source=../lib/utils.bash
 source "$(dirname "$0")/../lib/utils.bash"
 
+download_release() {
+  local version filename url
+  version="$1"
+  filename="$2"
+
+  # TODO: Adapt the release URL convention for <YOUR TOOL>
+  url="$GH_REPO/releases/download/v${version}/bat-v${version}.tar.gz"
+
+  echo "* Downloading bat release $version..."
+  curl "${curl_opts[@]}" -o "$filename" -C - "$(get_download_url $"version")" || fail "Could not download $url"
+}
+
 install_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
 
 
@@ -36,39 +48,39 @@ install_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH
 #   rm -rf "${install_path}/bat.tar.gz" "${install_path}"/bat-*
 # }
 
-# get_arch() {
-#   arch=$(uname -m | tr '[:upper:]' '[:lower:]')
-#   case ${arch} in
-#   arm64)
-#     arch='aarch64'
-#     ;;
-#   esac
+get_arch() {
+  arch=$(uname -m | tr '[:upper:]' '[:lower:]')
+  case ${arch} in
+  arm64)
+    arch='aarch64'
+    ;;
+  esac
 
-#   echo ${arch}
-# }
+  echo ${arch}
+}
 
-# get_platform() {
-#   plat=$(uname | tr '[:upper:]' '[:lower:]')
-#   case ${plat} in
-#   darwin)
-#     plat='apple-darwin'
-#     ;;
-#   linux)
-#     plat='unknown-linux-gnu'
-#     ;;
-#   windows)
-#     plat='pc-windows=msvc'
-#     ;;
-#   esac
+get_platform() {
+  plat=$(uname | tr '[:upper:]' '[:lower:]')
+  case ${plat} in
+  darwin)
+    plat='apple-darwin'
+    ;;
+  linux)
+    plat='unknown-linux-gnu'
+    ;;
+  windows)
+    plat='pc-windows=msvc'
+    ;;
+  esac
 
-#   echo ${plat}
-# }
+  echo ${plat}
+}
 
-# get_download_url() {
-#   local version="$1"
-#   local arch="$(get_arch)"
-#   local platform="$(get_platform)"
-#   echo "https://github.com/sharkdp/bat/releases/download/v${version}/bat-v${version}-${arch}-${platform}.tar.gz"
-# }
+get_download_url() {
+  local version="$1"
+  local arch="$(get_arch)"
+  local platform="$(get_platform)"
+  echo "https://github.com/sharkdp/bat/releases/download/v${version}/bat-v${version}-${arch}-${platform}.tar.gz"
+}
 
 # install_bat "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
