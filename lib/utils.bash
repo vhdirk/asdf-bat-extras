@@ -40,7 +40,7 @@ download_release() {
   filename="$2"
 
   # TODO: Adapt the release URL convention for <YOUR TOOL>
-  url="$GH_REPO/archive/v${version}.tar.gz"
+  url="$GH_REPO/foo/v${version}/bat-v${version}.tar.gz"
 
   echo "* Downloading bat release $version..."
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
