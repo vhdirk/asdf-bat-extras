@@ -42,7 +42,7 @@ download_release() {
   # TODO: Adapt the release URL convention for <YOUR TOOL>
   url="$GH_REPO/archive/v${version}.tar.gz"
 
-  echo "* Downloading <YOUR TOOL> release $version..."
+  echo "* Downloading bat release $version..."
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
@@ -66,6 +66,8 @@ install_version() {
     # TODO: Asert <YOUR TOOL> executable exists.
     local tool_cmd
     tool_cmd="$(echo "bat --version" | cut -d' ' -f1)"
+
+    chmod +x "$install_path/bin/$tool_cmd"
     test -x "$install_path/bin/$tool_cmd" || fail "Expected $install_path/bin/$tool_cmd to be executable."
 
     echo "bat $version installation was successful!"
