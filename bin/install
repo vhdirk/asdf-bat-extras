@@ -1,9 +1,30 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -e
+set -o pipefail
 
-# shellcheck source=../lib/utils.bash
-source "$(dirname "$0")/../lib/utils.bash"
+ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
+TMPDIR=${TMPDIR:-/tmp}
+[ -n "$ASDF_INSTALL_VERSION" ] || (>&2 echo 'Missing ASDF_INSTALL_VERSION' && exit 1)
+[ -n "$ASDF_INSTALL_PATH" ] || (>&2 echo 'Missing ASDF_INSTALL_PATH' && exit 1)
+
+install_bat() {
+  local version=$2
+  local install_path=$3
+  local bin_install_path="$install_path/bin"
+  local download_url="$(get_download_url "$version")"
+
+  mkdir -p "${bin_install_path}"
+
+  local bin_path="${bin_install_path}/bat"
+  echo "Downloading bat from ${download_url}"
+  curl -sSL "$download_url" -o "${install_path}/bat.tar.gz"
+  tar xzf "${install_path}/bat.tar.gz" -C "${install_path}"
+  mv "${install_path}/bat-v${version}-$(get_arch)-$(get_platform)"/* "${install_path}"
+  mv "${install_path}/bat" "${bin_path}"
+  chmod +x "$bin_path"
+  rm -rf "${install_path}/bat.tar.gz" "${install_path}"/bat-*
+}
 
 get_arch() {
   arch=$(uname -m | tr '[:upper:]' '[:lower:]')
@@ -40,48 +61,4 @@ get_download_url() {
   echo "https://github.com/sharkdp/bat/releases/download/v${version}/bat-v${version}-${arch}-${platform}.tar.gz"
 }
 
-download_release() {
-  local version filename url
-  version="$1"
-  filename="$2"
-
-  # TODO: Adapt the release URL convention for <YOUR TOOL>
-  url="$GH_REPO/releases/download/v${version}/bat-v${version}.tar.gz"
-
-  echo "* Downloading bat release $version..."
-  curl "${curl_opts[@]}" -o "$filename" -C - "$(get_download_url $"version")" || fail "Could not download $url"
-}
-
-install_version "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
-
-
-# #!/usr/bin/env bash
-
-# set -e
-# set -o pipefail
-
-# ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
-# TMPDIR=${TMPDIR:-/tmp}
-# [ -n "$ASDF_INSTALL_VERSION" ] || (>&2 echo 'Missing ASDF_INSTALL_VERSION' && exit 1)
-# [ -n "$ASDF_INSTALL_PATH" ] || (>&2 echo 'Missing ASDF_INSTALL_PATH' && exit 1)
-
-# install_bat() {
-#   local version=$2
-#   local install_path=$3
-#   local bin_install_path="$install_path/bin"
-#   local download_url="$(get_download_url "$version")"
-
-#   mkdir -p "${bin_install_path}"
-
-#   local bin_path="${bin_install_path}/bat"
-#   echo "Downloading bat from ${download_url}"
-#   curl -sSL "$download_url" -o "${install_path}/bat.tar.gz"
-#   tar xzf "${install_path}/bat.tar.gz" -C "${install_path}"
-#   mv "${install_path}/bat-v${version}-$(get_arch)-$(get_platform)"/* "${install_path}"
-#   mv "${install_path}/bat" "${bin_path}"
-#   chmod +x "$bin_path"
-#   rm -rf "${install_path}/bat.tar.gz" "${install_path}"/bat-*
-# }
-
-
-# install_bat "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+install_bat "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
