@@ -30,34 +30,30 @@ asdf-plugin-test:
     - asdf list-all $PLUGIN_NAME
     - asdf plugin test $PLUGIN_NAME $CI_REPOSITORY_URL --asdf-plugin-gitref $CI_COMMIT_REF_NAME "$PLUGIN_EXEC --version" || exit 1
 
-notify_success:
-  stage: notify
-  image: alpine:latest
-  before_script:
-    - apk update && apk add curl
-  when: on_success
+.pushover_call:
+  image: curlimages/curl:latest
   allow_failure: true
   script:
-    - project="${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}"
     - curl -s --form-string "token=${PUSHOVER_TOKEN}"
               --form-string "user=${PUSHOVER_USER_TOKEN}"
               --form-string "url=${CI_PIPELINE_URL}"
-              --form-string "priority=-1"
-              --form-string "message=Pipeline success for ${project} on ${CI_COMMIT_REF_NAME}"
+              --form-string "priority=${priority}"
+              --form-string "message=${message}"
               https://api.pushover.net/1/messages.json
+
+notify_success:
+  stage: notify
+  when: on_success
+  extends: .pushover_call
+  variables:
+    priority: -1
+    message: "Pipeline success for ${CI_PROJECT_PATH} on ${CI_COMMIT_REF_NAME}"
+
 
 notify_fail:
   stage: notify
-  image: alpine:latest
-  before_script:
-    - apk update && apk add curl
   when: on_failure
-  allow_failure: true
-  script:
-    - project="${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}"
-    - curl -s --form-string "token=${PUSHOVER_TOKEN}"
-              --form-string "user=${PUSHOVER_USER_TOKEN}"
-              --form-string "url=${CI_JOB_URL}"
-              --form-string "priority=1"
-              --form-string "message=Pipeline failure for ${project} on ${CI_COMMIT_REF_NAME}"
-              https://api.pushover.net/1/messages.json
+  extends: .pushover_call
+  variables:
+    priority: 1
+    message: "Pipeline failure for ${CI_PROJECT_PATH} on ${CI_COMMIT_REF_NAME}"
