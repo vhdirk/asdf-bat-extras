@@ -32,6 +32,9 @@ get_arch() {
   arm64)
     arch='aarch64'
     ;;
+  armv7l)
+    arch='arm'
+    ;;
   esac
 
   echo "${arch}"
@@ -45,6 +48,7 @@ get_platform() {
     ;;
   linux)
     plat='unknown-linux-gnu'
+    [[ $(get_arch) == "arm" ]] && plat='unknown-linux-gnueabihf'
     ;;
   windows)
     plat='pc-windows=msvc'
