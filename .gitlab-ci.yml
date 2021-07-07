@@ -7,7 +7,7 @@ stages:
 
 variables:
   PLUGIN_NAME: bat
-  PLUGIN_EXEC: $PLUGIN_NAME
+  PLUGIN_CHECK: "bat --version"
   SHELLCHECK_VERSION: stable
 
 asdf-plugin-lint:
@@ -28,7 +28,7 @@ asdf-plugin-test:
   script:
     - asdf plugin-add $PLUGIN_NAME $CI_REPOSITORY_URL
     - asdf list-all $PLUGIN_NAME
-    - asdf plugin test $PLUGIN_NAME $CI_REPOSITORY_URL --asdf-plugin-gitref $CI_COMMIT_REF_NAME "$PLUGIN_EXEC --version" || exit 1
+    - asdf plugin test $PLUGIN_NAME $CI_REPOSITORY_URL --asdf-plugin-gitref $CI_COMMIT_REF_NAME "$PLUGIN_CHECK" || exit 1
 
 .pushover_call:
   image: curlimages/curl:latest
