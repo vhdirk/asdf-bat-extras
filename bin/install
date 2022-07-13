@@ -51,7 +51,7 @@ get_platform() {
     [[ $(get_arch) == "arm" ]] && plat='unknown-linux-gnueabihf'
     ;;
   windows)
-    plat='pc-windows=msvc'
+    plat='pc-windows-msvc'
     ;;
   esac
 
@@ -65,4 +65,6 @@ get_download_url() {
   echo "https://github.com/sharkdp/bat/releases/download/v${version}/bat-v${version}-${arch}-${platform}.tar.gz"
 }
 
-install_bat "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+if [[ -z "$SHELLSPEC_LIB" ]]; then
+  install_bat "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+fi

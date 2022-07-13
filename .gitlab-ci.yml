@@ -30,6 +30,18 @@ asdf-plugin-test:
     - asdf list-all $PLUGIN_NAME
     - asdf plugin test $PLUGIN_NAME $CI_REPOSITORY_URL --asdf-plugin-gitref $CI_COMMIT_REF_NAME "$PLUGIN_CHECK" || exit 1
 
+shellspec-test:
+  stage: test
+  artifacts:
+    reports:
+      junit: results_junit.xml
+  before_script:
+    - ln -sf /bin/bash /bin/sh
+    - apt update && apt install -y git
+    - git clone https://github.com/shellspec/shellspec.git
+  script:
+    - shellspec/bin/shellspec -f documentation -o junit --reportdir .
+
 .pushover_call:
   image: curlimages/curl:latest
   allow_failure: true
