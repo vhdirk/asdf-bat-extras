@@ -2,49 +2,106 @@
 export ASDF_INSTALL_VERSION=123
 export ASDF_INSTALL_PATH=/tmp
 
-Describe 'asdf-cosign'
+Describe 'asdf-bat'
   Include 'bin/install'
 
   Describe 'get_arch()'
-    Parameters
-      "Intel" "x86_64" "x86_64"
-      "ARM64" "arm64" "aarch64"
-      "ARMV"  "armv7l" "arm"
-    End
-
-    Context "when CPU is $1"
+    Context "when CPU is Intel"
       Mock 'uname'
-        echo "$2"
+        echo "x86_64"
       End
 
-      It "returns $3 on $1 CPU"
+      It "returns x86_64"
         When call get_arch
-        The output should equal "$3"
+        The output should equal "x86_64"
+      End
+    End
+
+    Context "when CPU is ARM64"
+      Mock 'uname'
+        echo "arm64"
+      End
+
+      It "returns aarch64"
+        When call get_arch
+        The output should equal "aarch64"
+      End
+    End
+
+    Context "when CPU is ARM"
+      Mock 'uname'
+        echo "armv7l"
+      End
+
+      It "returns arm"
+        When call get_arch
+        The output should equal "arm"
       End
     End
   End
 
   Describe 'get_platform()'
-    Parameters
-      "OSX"    "Darwin"  "apple-darwin"   "x86_64"
-      "Linux"  "Linux"   "unknown-linux-gnu"  "x86_64"
-      "Linux"  "Linux"   "unknown-linux-gnueabihf"   "arm"
-      "Windows" "Windows"  "pc-windows-msvc"    "x86_64"
-    End
-
-    Context "when OS is $1"
+    Context "when OS is OSX"
       Mock uname
-        echo "$2"
+        echo "Darwin"
       End
 
       # Have to cheat here as can not mock uname twice
       get_arch() {
-        echo "$4"
+        echo "x86_64"
       }
 
-      It "returns $3"
+      It "returns apple-darwin"
         When call get_platform
-        The output should equal "$3"
+        The output should equal "apple-darwin"
+      End
+    End
+
+    Context "when OS is Linux on Intel CPU"
+      Mock uname
+        echo "Linux"
+      End
+
+      # Have to cheat here as can not mock uname twice
+      get_arch() {
+        echo "x86_64"
+      }
+
+      It "returns unknown-linux-gnu"
+        When call get_platform
+        The output should equal "unknown-linux-gnu"
+      End
+    End
+
+    Context "when OS is Linux on ARM CPU"
+      Mock uname
+        echo "Linux"
+      End
+
+      # Have to cheat here as can not mock uname twice
+      get_arch() {
+        echo "arm"
+      }
+
+      It "returns unknown-linux-gnueabihf"
+        When call get_platform
+        The output should equal "unknown-linux-gnueabihf"
+      End
+    End
+
+    Context "when OS is Windows"
+      Mock uname
+        echo "Windows"
+      End
+
+      # Have to cheat here as can not mock uname twice
+      get_arch() {
+        echo "x86_64"
+      }
+
+      It "returns pc-windows-msvc"
+        When call get_platform
+        The output should equal "pc-windows-msvc"
       End
     End
   End
