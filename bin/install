@@ -48,5 +48,5 @@ get_download_url() {
 }
 
 if [[ -z "$SHELLSPEC_LIB" ]]; then
-  install_bat "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+  install_bat_extras "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
 fi
