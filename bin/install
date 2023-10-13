@@ -3,50 +3,50 @@
 set -e
 set -o pipefail
 
-ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version  }
+ASDF_INSTALL_TYPE=${ASDF_INSTALL_TYPE:-version	}
 TMPDIR=${TMPDIR:-/tmp}
-[ -n "$ASDF_INSTALL_VERSION" ] || (>&2 echo 'Missing ASDF_INSTALL_VERSION' && exit 1)
-[ -n "$ASDF_INSTALL_PATH" ] || (>&2 echo 'Missing ASDF_INSTALL_PATH' && exit 1)
+[ -n "$ASDF_INSTALL_VERSION" ] || (echo >&2 'Missing ASDF_INSTALL_VERSION' && exit 1)
+[ -n "$ASDF_INSTALL_PATH" ] || (echo >&2 'Missing ASDF_INSTALL_PATH' && exit 1)
 
 install_bat_extras() {
-  local version=$2
-  local install_path=$3
-  local download_url; download_url="$(get_download_url "$version")"
+	local version=$2
+	local install_path=$3
+	local download_url
+	download_url="$(get_download_url "$version")"
 
-  local tmp_download_dir
+	local tmp_download_dir
 
-  if [ -n "$ASDF_DOWNLOAD_PATH" ]; then
-    [ ! -d "$ASDF_DOWNLOAD_PATH" ] && mkdir -p "$ASDF_DOWNLOAD_PATH"
-    tmp_download_dir="$ASDF_DOWNLOAD_PATH"
-  elif [ -z "$TMPDIR" ]; then
-    tmp_download_dir="$(mktemp -d -t bat_extras_XXXXXX)"
-  else
-    tmp_download_dir="$TMPDIR"
-  fi
+	if [ -n "$ASDF_DOWNLOAD_PATH" ]; then
+		[ ! -d "$ASDF_DOWNLOAD_PATH" ] && mkdir -p "$ASDF_DOWNLOAD_PATH"
+		tmp_download_dir="$ASDF_DOWNLOAD_PATH"
+	elif [ -z "$TMPDIR" ]; then
+		tmp_download_dir="$(mktemp -d -t bat_extras_XXXXXX)"
+	else
+		tmp_download_dir="$TMPDIR"
+	fi
 
-  local bin_install_path="$install_path/bin"
-  mkdir -p "${bin_install_path}"
+	local bin_install_path="$install_path/bin"
+	mkdir -p "${bin_install_path}"
 
-  local bin_path="${bin_install_path}/bat-extras"
-  echo "Downloading bat-extras from ${download_url}"
+	echo "Downloading bat-extras from ${download_url}"
 
-  source_path="${tmp_download_dir}/bat-extras.zip"
-  curl -sSL "$download_url" -o "$source_path"
+	source_path="${tmp_download_dir}/bat-extras.zip"
+	curl -sSL "$download_url" -o "$source_path"
 
-  if ! type "unzip" &>/dev/null; then
-    echo "ERROR: Command 'unzip' not found."
-    echo "unzip must be installed on your system."
-    exit 1
-  fi
+	if ! type "unzip" &>/dev/null; then
+		echo "ERROR: Command 'unzip' not found."
+		echo "unzip must be installed on your system."
+		exit 1
+	fi
 
-  unzip -q "$source_path" -d "$install_path" || exit 1
+	unzip -q "$source_path" -d "$install_path" || exit 1
 }
 
 get_download_url() {
-  local version="$1"
-  echo "https://github.com/eth-p/bat-extras/releases/download/v${version}/bat-extras-${version/./}.zip"
+	local version="$1"
+	echo "https://github.com/eth-p/bat-extras/releases/download/v${version}/bat-extras-${version/./}.zip"
 }
 
 if [[ -z "$SHELLSPEC_LIB" ]]; then
-  install_bat_extras "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+	install_bat_extras "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
 fi

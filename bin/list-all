@@ -7,7 +7,6 @@ source "$(dirname "$0")/../lib/utils.bash"
 
 list_all_versions | sort_versions | xargs echo
 
-
 # #!/usr/bin/env bash
 
 # releases_path=https://api.github.com/repos/sharkdp/bat/releases
