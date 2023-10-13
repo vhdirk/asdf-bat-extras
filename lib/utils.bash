@@ -3,10 +3,10 @@
 set -euo pipefail
 
 # TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for <YOUR TOOL>.
-GH_REPO="https://github.com/sharkdp/bat"
+GH_REPO="https://github.com/eth-p/bat-extras"
 
 fail() {
-  echo -e "asdf-bat: $*"
+  echo -e "asdf-bat-extras: $*"
   exit 1
 }
 
@@ -40,7 +40,7 @@ download_release() {
   filename="$2"
 
   # TODO: Adapt the release URL convention for <YOUR TOOL>
-  url="$GH_REPO/foo/v${version}/bat-v${version}.tar.gz"
+  url="$GH_REPO/foo/v${version}/bat-extras-v${version/./}.zip"
 
   echo "* Downloading bat release $version..."
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
@@ -52,11 +52,11 @@ install_version() {
   local install_path="$3"
 
   if [ "$install_type" != "version" ]; then
-    fail "asdf-bat supports release installs only"
+    fail "asdf-bat-extras supports release installs only"
   fi
 
   # TODO: Adapt this to proper extension and adapt extracting strategy.
-  local release_file="$install_path/bat-$version.tar.gz"
+  local release_file="$install_path/bat-extras-$version.zip"
   (
     mkdir -p "$install_path"
     download_release "$version" "$release_file"
@@ -65,12 +65,12 @@ install_version() {
 
     # TODO: Asert <YOUR TOOL> executable exists.
     local tool_cmd
-    tool_cmd="$(echo "bat --version" | cut -d' ' -f1)"
+    tool_cmd="$(echo "batgrep --version" | cut -d' ' -f1)"
 
     chmod +x "$install_path/bin/$tool_cmd"
     test -x "$install_path/bin/$tool_cmd" || fail "Expected $install_path/bin/$tool_cmd to be executable."
 
-    echo "bat $version installation was successful!"
+    echo "bat-extras $version installation was successful!"
   ) || (
     rm -rf "$install_path"
     fail "An error ocurred while installing bat $version."

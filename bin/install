@@ -8,61 +8,43 @@ TMPDIR=${TMPDIR:-/tmp}
 [ -n "$ASDF_INSTALL_VERSION" ] || (>&2 echo 'Missing ASDF_INSTALL_VERSION' && exit 1)
 [ -n "$ASDF_INSTALL_PATH" ] || (>&2 echo 'Missing ASDF_INSTALL_PATH' && exit 1)
 
-install_bat() {
+install_bat_extras() {
   local version=$2
   local install_path=$3
-  local bin_install_path="$install_path/bin"
   local download_url; download_url="$(get_download_url "$version")"
 
+  local tmp_download_dir
+
+  if [ -n "$ASDF_DOWNLOAD_PATH" ]; then
+    [ ! -d "$ASDF_DOWNLOAD_PATH" ] && mkdir -p "$ASDF_DOWNLOAD_PATH"
+    tmp_download_dir="$ASDF_DOWNLOAD_PATH"
+  elif [ -z "$TMPDIR" ]; then
+    tmp_download_dir="$(mktemp -d -t bat_extras_XXXXXX)"
+  else
+    tmp_download_dir="$TMPDIR"
+  fi
+
+  local bin_install_path="$install_path/bin"
   mkdir -p "${bin_install_path}"
 
-  local bin_path="${bin_install_path}/bat"
-  echo "Downloading bat from ${download_url}"
-  curl -sSL "$download_url" -o "${install_path}/bat.tar.gz"
-  tar xzf "${install_path}/bat.tar.gz" -C "${install_path}"
-  mv "${install_path}/bat-v${version}-$(get_arch)-$(get_platform)"/* "${install_path}"
-  mv "${install_path}/bat" "${bin_path}"
-  chmod +x "$bin_path"
-  rm -rf "${install_path}/bat.tar.gz" "${install_path}"/bat-*
-}
+  local bin_path="${bin_install_path}/bat-extras"
+  echo "Downloading bat-extras from ${download_url}"
 
-get_arch() {
-  local arch; arch=$(uname -m | tr '[:upper:]' '[:lower:]')
-  case ${arch} in
-  arm64)
-    arch='aarch64'
-    ;;
-  armv7l)
-    arch='arm'
-    ;;
-  esac
+  source_path="${tmp_download_dir}/bat-extras.zip"
+  curl -sSL "$download_url" -o "$source_path"
 
-  echo "${arch}"
-}
+  if ! type "unzip" &>/dev/null; then
+    echo "ERROR: Command 'unzip' not found."
+    echo "unzip must be installed on your system."
+    exit 1
+  fi
 
-get_platform() {
-  local plat; plat=$(uname | tr '[:upper:]' '[:lower:]')
-  case ${plat} in
-  darwin)
-    plat='apple-darwin'
-    ;;
-  linux)
-    plat='unknown-linux-gnu'
-    [[ $(get_arch) == "arm" ]] && plat='unknown-linux-gnueabihf'
-    ;;
-  windows)
-    plat='pc-windows-msvc'
-    ;;
-  esac
-
-  echo "${plat}"
+  unzip -q "$source_path" -d "$install_path" || exit 1
 }
 
 get_download_url() {
   local version="$1"
-  local arch; arch="$(get_arch)"
-  local platform; platform="$(get_platform)"
-  echo "https://github.com/sharkdp/bat/releases/download/v${version}/bat-v${version}-${arch}-${platform}.tar.gz"
+  echo "https://github.com/eth-p/bat-extras/releases/download/v${version}/bat-extras-${version/./}.zip"
 }
 
 if [[ -z "$SHELLSPEC_LIB" ]]; then
