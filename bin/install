@@ -44,7 +44,7 @@ install_bat_extras() {
 
 get_download_url() {
 	local version="$1"
-	echo "https://github.com/eth-p/bat-extras/releases/download/v${version}/bat-extras-${version/./}.zip"
+	echo "https://github.com/eth-p/bat-extras/releases/download/v${version}/bat-extras-${version}.zip"
 }
 
 if [[ -z "$SHELLSPEC_LIB" ]]; then
